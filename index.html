@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary My Love</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff8fa3;
+            --text-color: #590d22;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Background Image with Overlay */
+            background: linear-gradient(rgba(255, 240, 243, 0.85), rgba(255, 229, 236, 0.85)), url('img1.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Floating Hearts Background */
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            bottom: -20px;
+            color: var(--primary-color);
+            opacity: 0.6;
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-100vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Main Layout */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Initially centered */
+            transition: all 0.8s ease;
+        }
+
+        .split-layout {
+            display: flex;
+            /* Initially flex to center the single panel */
+            justify-content: center;
+            width: 100%;
+            transition: all 0.8s ease;
+        }
+
+        /* Active Split View (Applied via JS) */
+        .container.active-split .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        /* Left Panel: Text & Timer */
+        .left-panel {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            border: var(--glass-border);
+            box-shadow: 0 8px 32px rgba(255, 77, 109, 0.15);
+            transition: all 0.8s ease;
+            max-width: 800px;
+            /* Limit width when centered */
+            width: 100%;
+        }
+
+        .container.active-split .left-panel {
+            max-width: 100%;
+            /* Full width in grid cell */
+        }
+
+        .left-panel:hover {
+            transform: scale(1.02);
+        }
+
+        /* Right Panel: Gallery */
+        .right-panel {
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0;
+            transition: all 1s ease;
+        }
+
+        .container.active-split .right-panel {
+            height: 80vh;
+            opacity: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .right-panel::-webkit-scrollbar {
+            display: none;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Great Vibes', cursive;
+            color: var(--primary-color);
+        }
+
+        /* Section 1: Countdown */
+        #countdown-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1.5s ease-in;
+            cursor: pointer;
+        }
+
+        .countdown-title {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.2;
+        }
+
+        .timer {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .time-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.2);
+            min-width: 100px;
+            animation: pulse 2s infinite;
+        }
+
+        .time-value {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            display: block;
+        }
+
+        .time-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .click-hint {
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        /* Section 2: Anniversary Message */
+        #anniversary-message {
+            display: none;
+            /* Hidden initially */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .message-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .message-text {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Section 3: Love Declaration */
+        .love-declaration {
+            margin-top: 2rem;
+            display: none;
+            /* Hidden initially */
+        }
+
+        .love-text {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            animation: zoomIn 1s ease-out;
+        }
+
+        /* Section 4: Memories Gallery */
+        .gallery-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 240, 243, 0.95);
+            padding: 1rem;
+            z-index: 10;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            /* Smaller min-width for mobile */
+            gap: 1rem;
+        }
+
+        .memory-card {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+            cursor: pointer;
+            /* Clickable */
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px) scale(1.02);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .memory-caption {
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            margin: auto;
+            padding: 2rem;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.3s;
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: var(--primary-color);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-text {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-top: 1rem;
+        }
+
+        /* Music Control */
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .music-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #ff4d6d;
+            }
+
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 30px #ff8fa3;
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .container {
+                padding: 1rem;
+                align-items: flex-start;
+                padding-top: 2rem;
+            }
+
+            .container.active-split .split-layout {
+                grid-template-columns: 1fr;
+                /* Stack vertically */
+                gap: 2rem;
+            }
+
+            .left-panel {
+                padding: 1.5rem;
+            }
+
+            .countdown-title {
+                font-size: 2rem;
+            }
+
+            .time-box {
+                padding: 0.8rem;
+                min-width: 70px;
+            }
+
+            .time-value {
+                font-size: 1.8rem;
+            }
+
+            .message-title {
+                font-size: 2.2rem;
+            }
+
+            .love-text {
+                font-size: 2.5rem;
+            }
+
+            /* On mobile, let the gallery flow naturally */
+            .container.active-split .right-panel {
+                height: auto;
+                overflow-y: visible;
+                padding: 0;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                /* 2 columns on mobile */
+            }
+
+            .modal-text {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="bg-music" loop>
+        <source src="music.mp3" type="audio/mp3">
+    </audio>
+    <button class="music-btn" onclick="toggleMusic()">🎵</button>
+
+    <div class="hearts-container" id="hearts-bg"></div>
+
+    <!-- Modal for Image Messages -->
+    <div id="messageModal" class="modal" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <p id="modalText" class="modal-text">Message goes here...</p>
+        </div>
+    </div>
+
+    <div class="container" id="main-container">
+        <div class="split-layout">
+
+            <!-- LEFT PANEL: Countdown / Message -->
+            <div class="left-panel" onclick="revealSurprise()">
+                <!-- Section 1: Countdown -->
+                <section id="countdown-section">
+                    <h1 class="countdown-title">Counting Every Second Until Our Anniversary 💖</h1>
+                    <div class="timer">
+                        <div class="time-box">
+                            <span class="time-value" id="days">00</span>
+                            <span class="time-label">Days</span>
+                        </div>
+                        <div class="time-box">
+                            <span class="time-value" id="hours">00</span>
+                            <span class="time-label">Hours</span>
+                        </div>
+                        <div class="time-box">
+                            <span class="time-value" id="minutes">00</span>
+                            <span class="time-label">Mins</span>
+                        </div>
+                        <div class="time-box">
+                            <span class="time-value" id="seconds">00</span>
+                            <span class="time-label">Secs</span>
+                        </div>
+                    </div>
+                    <p class="click-hint">(Click here for a surprise! ✨)</p>
+                </section>
+
+                <!-- Section 2: Anniversary Message -->
+                <section id="anniversary-message">
+                    <h1 class="message-title">Happy Anniversary, Shubhi Aditya Khare 💖</h1>
+                    <p class="message-text">
+                        Every moment with you is a memory I cherish forever. You are my heart, my soul, and my
+                        everything. ❤️
+                    </p>
+                </section>
+
+                <!-- Section 3: Love Declaration -->
+                <section class="love-declaration" id="love-declaration">
+                    <h2 class="love-text">I Love You Baby 💕</h2>
+                </section>
+            </div>
+
+            <!-- RIGHT PANEL: Gallery -->
+            <div class="right-panel">
+                <section class="gallery-section">
+                    <h2 class="gallery-title">Our Beautiful Memories</h2>
+                    <div class="gallery-grid">
+                        <div class="memory-card" style="animation-delay: 0.2s" onclick="showImageMessage(1)">
+                            <img src="img1.jpg" alt="Memory 1" class="memory-img">
+                            <p class="memory-caption">Our Beautiful Bond</p>
+                        </div>
+                        <div class="memory-card" style="animation-delay: 0.4s" onclick="showImageMessage(2)">
+                            <img src="img2.jpg" alt="Memory 2" class="memory-img">
+                            <p class="memory-caption">Holding Hands Forever</p>
+                        </div>
+                        <div class="memory-card" style="animation-delay: 0.6s" onclick="showImageMessage(3)">
+                            <img src="img3.jpg" alt="Memory 3" class="memory-img">
+                            <p class="memory-caption">Your Beautiful Smile</p>
+                        </div>
+                        <div class="memory-card" style="animation-delay: 0.8s" onclick="showImageMessage(4)">
+                            <img src="img4.jpg" alt="Memory 4" class="memory-img">
+                            <p class="memory-caption">My Cutie</p>
+                        </div>
+                        <div class="memory-card" style="animation-delay: 1.0s" onclick="showImageMessage(5)">
+                            <img src="img5.jpg" alt="Memory 5" class="memory-img">
+                            <p class="memory-caption">My Handsome Boy</p>
+                        </div>
+                        <div class="memory-card" style="animation-delay: 1.2s" onclick="showImageMessage(6)">
+                            <img src="img6.jpg" alt="Memory 6" class="memory-img">
+                            <p class="memory-caption">Forever & Always</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const targetDate = new Date("December 18, 2025 00:00:00").getTime();
+
+        // --- Countdown Logic ---
+        const countdownSection = document.getElementById('countdown-section');
+        const messageSection = document.getElementById('anniversary-message');
+        const loveDeclaration = document.getElementById('love-declaration');
+        const mainContainer = document.getElementById('main-container');
+        let timerInterval;
+
+        function updateTimer() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                revealSurprise(); // Auto-reveal if time is up
+            } else {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").innerText = String(days).padStart(2, '0');
+                document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+                document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            }
+        }
+
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer(); // Initial call
+
+        // --- Reveal Logic ---
+        function revealSurprise() {
+            // 1. Hide Countdown
+            countdownSection.style.display = "none";
+
+            // 2. Show Message & Love Text
+            messageSection.style.display = "flex";
+            loveDeclaration.style.display = "block";
+
+            // 3. Transition to Split View (Show Gallery)
+            setTimeout(() => {
+                mainContainer.classList.add('active-split');
+            }, 100);
+
+            // 4. Play Music (if available)
+            if (music.paused) {
+                music.play().catch(error => {
+                    console.log("Music play failed (likely due to browser policy or missing file):", error);
+                });
+                document.querySelector('.music-btn').innerText = "⏸️";
+                isPlaying = true;
+            }
+        }
+
+        // --- Image Message Modal Logic ---
+        const modal = document.getElementById("messageModal");
+        const modalText = document.getElementById("modalText");
+
+        const messages = [
+            "Happy Anniversary My Love! ❤️",      // Image 1
+            "I Love You Baby! 💕",                // Image 2
+            "Every moment with you is magic. ✨", // Image 3
+            "You make my heart smile. 😊",        // Image 4
+            "My favorite place is inside your hug. 🤗", // Image 5
+            "Growing old with you is my greatest adventure. 🚀" // Image 6
+        ];
+
+        function showImageMessage(index) {
+            // index is 1-based, array is 0-based
+            const msg = messages[index - 1] || "I love you! ❤️";
+            modalText.innerText = msg;
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+
+        // --- Floating Hearts Animation ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 3 + 5 + "s";
+            heart.style.fontSize = Math.random() * 20 + 10 + "px";
+            document.getElementById('hearts-bg').appendChild(heart);
+            setTimeout(() => heart.remove(), 8000);
+        }
+        setInterval(createHeart, 300);
+
+        // --- Music Control ---
+        const music = document.getElementById('bg-music');
+        let isPlaying = false;
+
+        // Handle missing music file
+        music.onerror = function () {
+            console.log("Music file not found. Please add 'music.mp3' to the folder.");
+        };
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                document.querySelector('.music-btn').innerText = "🎵";
+            } else {
+                music.play().catch(e => console.log("Play error:", e));
+                document.querySelector('.music-btn').innerText = "⏸️";
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+
+</html>
